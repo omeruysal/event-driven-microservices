@@ -25,10 +25,6 @@ public class ProductAggregate {
     @CommandHandler
     public ProductAggregate(CreateProductCommand createProductCommand) {
 
-        if (createProductCommand.getPrice().compareTo(BigDecimal.ZERO) <= 0) { // Example logic
-            throw new IllegalArgumentException("Price can not be less or equal then zero");
-        }
-
         ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent();
 
         BeanUtils.copyProperties(createProductCommand, productCreatedEvent);

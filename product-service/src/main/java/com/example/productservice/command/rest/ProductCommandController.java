@@ -1,6 +1,7 @@
 package com.example.productservice.command.rest;
 
 import com.example.productservice.command.CreateProductCommand;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.core.env.Environment;
@@ -10,14 +11,14 @@ import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/hello")
+@RequestMapping("/products")
 public class ProductCommandController {
 
     private final Environment env;
     private final CommandGateway commandGateway;
 
     @PostMapping
-    public String createProduct(@RequestBody CreateProductRestModel request) {
+    public String createProduct(@Valid @RequestBody CreateProductRestModel request) {
         CreateProductCommand createProductCommand = CreateProductCommand.builder()
                 .price(request.getPrice())
                 .quantity(request.getQuantity())
