@@ -1,11 +1,8 @@
-package com.example.productservice.controller;
+package com.example.productservice.command.rest;
 
 import com.example.productservice.command.CreateProductCommand;
-import com.example.productservice.service.CreateProductRestModel;
-import com.example.productservice.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +14,6 @@ import java.util.UUID;
 public class ProductCommandController {
 
     private final Environment env;
-    private final ProductService productService;
     private final CommandGateway commandGateway;
 
     @PostMapping
@@ -39,7 +35,7 @@ public class ProductCommandController {
     }
 
     @GetMapping
-    public String welcome() {
-        return productService.welcome() + env.getProperty("local.server.port");
+    public String port() {
+        return env.getProperty("local.server.port");
     }
 }
