@@ -24,18 +24,18 @@ public class ProductCommandController {
                 .quantity(request.getQuantity())
                 .title(request.getTitle())
                 .productId(UUID.randomUUID().toString()).build();
-        String result = "";
+        String result;
 
         try {
             result = commandGateway.sendAndWait(createProductCommand);
         } catch (Exception ex) {
-            System.out.println(ex);
+            result = ex.getLocalizedMessage();
         }
 
         return result;
     }
 
-    @GetMapping
+    @GetMapping("/port")
     public String port() {
         return env.getProperty("local.server.port");
     }
