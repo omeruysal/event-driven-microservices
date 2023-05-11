@@ -1,5 +1,7 @@
 package com.example.productservice.core.exception;
 
+import org.axonframework.commandhandling.CommandExecutionException;
+import org.hibernate.tool.schema.spi.CommandAcceptanceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,12 @@ public class ProductServiceErrorHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
+        ErrorMessage error = new ErrorMessage(new Date(), ex.getMessage());
+        return new ResponseEntity<>(error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {CommandExecutionException.class}) // it handles the exceptions which we throw in aggregate
+    public ResponseEntity<Object> handleCommandExecutionException(Exception ex, WebRequest request) {
         ErrorMessage error = new ErrorMessage(new Date(), ex.getMessage());
         return new ResponseEntity<>(error, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

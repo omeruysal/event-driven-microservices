@@ -1,7 +1,9 @@
 package com.example.productservice;
 
 import com.example.productservice.command.interceptors.CreateProductCommandInterceptor;
+import com.example.productservice.core.exception.ProductServiceEventsErrorHandler;
 import org.axonframework.commandhandling.CommandBus;
+import org.axonframework.config.EventProcessingConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -24,4 +26,9 @@ public class ProductServiceApplication {
         commandBus.registerDispatchInterceptor(context.getBean(CreateProductCommandInterceptor.class));
     }
 
+    @Autowired// to be able to use ProductServiceEventsErrorHandler, we need to add this configuration
+    public void configure(EventProcessingConfigurer config) {
+        config.registerListenerInvocationErrorHandler("product-group",
+                conf -> new ProductServiceEventsErrorHandler());
+    }
 }
