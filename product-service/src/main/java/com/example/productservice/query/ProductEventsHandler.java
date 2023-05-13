@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.messaging.interceptors.ExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class ProductEventsHandler {
 
     private final ProductRepository productsRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductEventsHandler.class);
 
     @ExceptionHandler(resultType = Exception.class)
     public void handleException(Exception ex) throws Exception{
@@ -40,5 +43,8 @@ public class ProductEventsHandler {
        ProductEntity entity = productsRepository.findByProductId(event.getProductId());
        entity.setQuantity(entity.getQuantity() -  event.getQuantity());
        productsRepository.save(entity);
+
+        LOGGER.info("ProductReservedEvent is called for productId: "+ event.getProductId() +
+                " and orderId: " + event.getOrderId());
     }
 }

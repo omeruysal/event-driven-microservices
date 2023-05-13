@@ -34,6 +34,15 @@ public class ProductAggregate {
         AggregateLifecycle.apply(productCreatedEvent);
     }
 
+
+    @EventSourcingHandler // there should not be logic, only for updating state of aggregate
+    public void on(ProductCreatedEvent productCreatedEvent) {
+        this.productId = productCreatedEvent.getProductId();
+        this.price = productCreatedEvent.getPrice();
+        this.quantity = productCreatedEvent.getQuantity();
+        this.title = productCreatedEvent.getTitle();
+    }
+
     @CommandHandler // it handles the event which comes from order microservice
     public void handle(ReserveProductCommand reserveProductCommand) {
         if (quantity < reserveProductCommand.getQuantity()) {
@@ -48,13 +57,6 @@ public class ProductAggregate {
         AggregateLifecycle.apply(productReservedEvent);
     }
 
-    @EventSourcingHandler // there should not be logic, only for updating state of aggregate
-    public void on(ProductCreatedEvent productCreatedEvent) {
-        this.productId = productCreatedEvent.getProductId();
-        this.price = productCreatedEvent.getPrice();
-        this.quantity = productCreatedEvent.getQuantity();
-        this.title = productCreatedEvent.getTitle();
-    }
 
     @EventSourcingHandler
     public void on(ProductReservedEvent event) {
