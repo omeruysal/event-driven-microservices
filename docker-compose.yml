@@ -14,7 +14,7 @@ services:
     networks:
       - axon-demo
     environment:
-      - AXONIQ_AXONSERVER_DEVMODE_ENABLED:true
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true
 
 volumes:
   axonserver-data:
