@@ -1,4 +1,4 @@
-package com.example.orderservice.command;
+package com.example.orderservice.command.commands;
 
 import com.example.orderservice.core.OrderStatus;
 import lombok.Builder;

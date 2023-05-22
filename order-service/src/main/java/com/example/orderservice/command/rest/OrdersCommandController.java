@@ -1,6 +1,6 @@
 package com.example.orderservice.command.rest;
 
-import com.example.orderservice.command.CreateOrderCommand;
+import com.example.orderservice.command.commands.CreateOrderCommand;
 import com.example.orderservice.core.OrderStatus;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
