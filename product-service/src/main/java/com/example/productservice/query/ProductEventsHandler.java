@@ -1,5 +1,6 @@
 package com.example.productservice.query;
 
+import com.example.core.commands.events.ProductReservationCancelledEvent;
 import com.example.core.commands.events.ProductReservedEvent;
 import com.example.productservice.core.data.ProductEntity;
 import com.example.productservice.core.data.ProductRepository;
@@ -22,7 +23,7 @@ public class ProductEventsHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductEventsHandler.class);
 
     @ExceptionHandler(resultType = Exception.class)
-    public void handleException(Exception ex) throws Exception{
+    public void handleException(Exception ex) throws Exception {
         throw ex;
     }
 
@@ -39,12 +40,25 @@ public class ProductEventsHandler {
     }
 
     @EventHandler // it will be triggered when ProductReservedEvent is published
-    public void on(ProductReservedEvent event){
-       ProductEntity entity = productsRepository.findByProductId(event.getProductId());
-       entity.setQuantity(entity.getQuantity() -  event.getQuantity());
-       productsRepository.save(entity);
+    public void on(ProductReservedEvent event) {
+        ProductEntity entity = productsRepository.findByProductId(event.getProductId());
+        entity.setQuantity(entity.getQuantity() - event.getQuantity());
+        productsRepository.save(entity);
 
-        LOGGER.info("ProductReservedEvent is called for productId: "+ event.getProductId() +
+        LOGGER.info("ProductReservedEvent is called for productId: " + event.getProductId() +
                 " and orderId: " + event.getOrderId());
+    }
+
+    @EventHandler // it will be triggered when ProductReservationCancelledEvent is published
+    public void on(ProductReservationCancelledEvent productReservationCancelledEvent) {
+        ProductEntity entity = productsRepository.findByProductId(productReservationCancelledEvent.getProductId());
+
+        int newQuantity = entity.getQuantity() + productReservationCancelledEvent.getQuantity();
+
+        entity.setQuantity(newQuantity);
+        productsRepository.save(entity);
+
+        LOGGER.info("ProductReservationCancelledEvent is called for productId: " + productReservationCancelledEvent.getProductId() +
+                " and orderId: " + productReservationCancelledEvent.getOrderId());
     }
 }

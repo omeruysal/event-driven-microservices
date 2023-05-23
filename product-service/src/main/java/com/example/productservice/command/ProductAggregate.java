@@ -1,6 +1,8 @@
 package com.example.productservice.command;
 
-import com.example.core.commands.ReserveProductCommand;
+import com.example.core.commands.commands.CancelProductReservationCommand;
+import com.example.core.commands.commands.ReserveProductCommand;
+import com.example.core.commands.events.ProductReservationCancelledEvent;
 import com.example.core.commands.events.ProductReservedEvent;
 import com.example.productservice.core.events.ProductCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
@@ -61,5 +63,22 @@ public class ProductAggregate {
     @EventSourcingHandler
     public void on(ProductReservedEvent event) {
         this.quantity -= event.getQuantity();
+    }
+
+    @CommandHandler // it handles the event which comes from order microservice
+    public void handle(CancelProductReservationCommand cancelProductReservationCommand) {
+        ProductReservationCancelledEvent productReservationCancelledEvent = ProductReservationCancelledEvent.builder()
+                .orderId(cancelProductReservationCommand.getOrderId())
+                .productId(cancelProductReservationCommand.getProductId())
+                .quantity(cancelProductReservationCommand.getQuantity())
+                .userId(cancelProductReservationCommand.getUserId())
+                .build();
+        AggregateLifecycle.apply(productReservationCancelledEvent);
+    }
+
+
+    @EventSourcingHandler
+    public void on(ProductReservationCancelledEvent productReservationCancelledEvent) {
+        this.quantity += productReservationCancelledEvent.getQuantity();
     }
 }
